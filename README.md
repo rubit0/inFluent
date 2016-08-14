@@ -3,7 +3,7 @@ inFluent
 
 
 inFluent is a simple fluent API for Unity3D GameObjects.
-This means that you can chain inline as many methods are you want - including lambdas!
+Now you can chain inline via extensions as many methods as you want - including lambdas!
 
 ----------
 
@@ -63,7 +63,7 @@ Let's consider the following example where we have a Script on our GameObject an
 Now we have set three settings with a single statement, isn't this much cleaner?
 Let's move to a more interesting example, attaching a Component with a lambda!
 
-    public Transform StartLookDurction
+    public Transform StartLookDirection
     public AudioClip AmbientMusic;
     public float StartAudioSound;
     ...

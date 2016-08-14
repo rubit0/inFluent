@@ -5,11 +5,25 @@ namespace inFluent
 {
     public static class FluentComponents
     {
+        private static GameObject AttachComponent<T>(this GameObject gameObject,out bool skipped, out T component) where T : Behaviour
+        {
+            if (gameObject.GetComponent<T>() != null)
+            {
+                skipped = false;
+                component = null;
+                return gameObject;
+            }
+
+            skipped = true;
+            component = gameObject.AddComponent<T>();
+            return gameObject;
+        }
+
         /// <summary>
         /// Attach a Unity component or Script to this GameObject.
         /// Note: Attachment is skipped if the component is already present.
         /// </summary>
-        /// <returns>GameObject</returns>
+        /// <returns>This GameObject.</returns>
         /// <param name="gameObject">This GameObject.</param>
         /// <typeparam name="T">Unity Component or Script</typeparam>
         public static GameObject AttachComponent<T>(this GameObject gameObject) where T : Behaviour
@@ -25,7 +39,7 @@ namespace inFluent
         /// Attach a Unity component or Script to this GameObject.
         /// Note: Attachment is skipped if the component is already present.
         /// </summary>
-        /// <returns>GameObject</returns>
+        /// <returns>This GameObject.</returns>
         /// <param name="gameObject">This GameObject.</param>
         /// <param name="skipped">Was the Component already attached?</param>
         /// <typeparam name="T">Unity Component or Script</typeparam>
@@ -45,15 +59,70 @@ namespace inFluent
         /// Attach a Unity component or Script to this GameObject.
         /// Note: Attachment is skipped if the component is already present.
         /// </summary>
-        /// <returns>GameObject</returns>
+        /// <returns>This GameObject.</returns>
         /// <param name="gameObject">This GameObject.</param>
-        /// <param name="skippedLambda">Add an action according if the Attachment was skipped.</param>
+        /// <param name="componentHandler">Delegate that can interact with the attached component. The first parameter tells if the component was attached.</param>
         /// <typeparam name="T">Unity Component or Script</typeparam>
-        public static GameObject AttachComponent<T>(this GameObject gameObject, Action<bool> skippedLambda) where T : Behaviour
+        public static GameObject AttachComponent<T>(this GameObject gameObject, Action<bool, T> componentHandler) where T : Behaviour
         {
             var attachResult = false;
-            gameObject.AttachComponent<T>(out attachResult);
-            skippedLambda.Invoke(attachResult);
+            T component = null;
+            gameObject.AttachComponent(out attachResult, out component);
+            componentHandler.Invoke(attachResult, component);
+
+            return gameObject;
+        }
+
+        /// <summary>
+        /// Destroys a component on this GameObject.
+        /// </summary>
+        /// <typeparam name="T">The components Type which must be a Unity Component or Script.</typeparam>
+        /// <param name="gameObject">This GameObject.</param>
+        /// <returns>This GameObject.</returns>
+        public static GameObject DestroyComponent<T>(this GameObject gameObject) where T : Behaviour
+        {
+            var component = gameObject.GetComponent<T>();
+            if (component != null)
+                MonoBehaviour.Destroy(component);
+
+            return gameObject;
+        }
+
+        /// <summary>
+        /// Destroys a component on this GameObject.
+        /// </summary>
+        /// <typeparam name="T">The components Type which must be a Unity Component or Script.</typeparam>
+        /// <param name="gameObject">This GameObject.</param>
+        /// <param name="skipped">Was the destruction skipped?</param>
+        /// <returns>This GameObject.</returns>
+        public static GameObject DestroyComponent<T>(this GameObject gameObject, out bool skipped) where T : Behaviour
+        {
+            var component = gameObject.GetComponent<T>();
+            if (component != null)
+            {
+                MonoBehaviour.Destroy(component);
+                skipped = true;
+            }
+            else
+            {
+                skipped = false;
+            }
+
+            return gameObject;
+        }
+
+        /// <summary>
+        /// Destroys a component on this GameObject.
+        /// </summary>
+        /// <typeparam name="C">The components Type which must be a Unity Component or Script.</typeparam>
+        /// <param name="gameObject">This GameObject.</param>
+        /// <param name="skippedHandler">Delegate that deals with the skipped desctruction state.</param>
+        /// <returns>This GameObject.</returns>
+        public static GameObject DestroyComponent<C>(this GameObject gameObject, Action<bool> skippedHandler) where C : Behaviour
+        {
+            var skipped = false;
+            gameObject.DestroyComponent<C>(out skipped);
+            skippedHandler.Invoke(skipped);
 
             return gameObject;
         }

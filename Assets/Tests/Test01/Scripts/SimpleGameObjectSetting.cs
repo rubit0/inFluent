@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+using System.Linq;
 using inFluent;
 
 public class SimpleGameObjectSetting : MonoBehaviour
@@ -12,22 +11,34 @@ public class SimpleGameObjectSetting : MonoBehaviour
     public Vector3 TargetLocalPosition;
     public Material CustomMaterial;
 
+    public SimpleGameObjectSetting(string name) :base()
+    {
+        this.TargetName = name;
+    }
+
 	void Start ()
     {
-        var result = false;
-
-        this.gameObject.SetName(() => TargetName.ToLower())
+        this.gameObject.SetName(() => 
+            {
+                var chars = TargetName.ToCharArray();
+                var reverse = chars.Reverse().ToString(); ;
+                return reverse;
+            })
             .SetTag(TargetTag)
             .SetLayer(1)
             .SetLocalScale(TargetLocalScale)
             .SetLocalPosition(TargetLocalPosition)
-            .MakeLookAt(LookAtTarget.position)
-            .AttachComponent<AudioSource>((r) => Debug.Log("Attached Component: " + r))
-            .AttachComponent<DummyBehaviourScript>((r) => Debug.Log("Attached Script: " + r))
-            .AttachComponent<Button>(out result)
-            .SetMaterial(() => (CustomMaterial) ? CustomMaterial : new Material(Shader.Find("Diffuse")))
-            .SetStatic(() => (gameObject.isStatic) ? false : true);
-
-        Debug.Log(result);
+            .LookAt(LookAtTarget.position)
+            .AttachComponent<AudioSource>()
+            .AttachComponent<DummyBehaviourScript>((r, c) =>
+            {
+                if(r)
+                {
+                    c.Name = "Test!";
+                    c.Log();
+                }
+            })
+            .SetMaterial((r) => (CustomMaterial != null) ? CustomMaterial : new Material(Shader.Find("Diffuse")))
+            .SetStatic(true);
 	}
 }

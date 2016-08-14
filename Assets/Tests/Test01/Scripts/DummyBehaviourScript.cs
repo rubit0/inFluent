@@ -3,8 +3,10 @@ using System.Collections;
 
 public class DummyBehaviourScript : MonoBehaviour
 {
-	void Start ()
+    public string Name { get; set; }
+
+    public void Log()
     {
-	
+        Debug.Log(Name);
 	}
 }

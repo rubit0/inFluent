@@ -126,5 +126,19 @@ namespace inFluent
 
             return gameObject;
         }
+
+        /// <summary>
+        /// Allows you to work with a Component inline.
+        /// </summary>
+        /// <typeparam name="T">The components Type which must be a Unity Component or Script.</typeparam>
+        /// <param name="gameObject">This GameObject./param>
+        /// <param name="componentHandler">Delegate that allows you to work with the component. The first parameter tells if the component was present.</param>
+        /// <returns>This GameObject.</returns>
+        public static GameObject TouchComponent<T>(this GameObject gameObject, Action<bool, T> componentHandler) where T : Behaviour
+        {
+            var component = gameObject.GetComponent<T>();
+            componentHandler.Invoke((component != null), component);
+            return gameObject;
+        }
     }
 }

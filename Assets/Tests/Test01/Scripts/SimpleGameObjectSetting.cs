@@ -39,6 +39,14 @@ public class SimpleGameObjectSetting : MonoBehaviour
                 }
             })
             .SetMaterial((r) => (CustomMaterial != null) ? CustomMaterial : new Material(Shader.Find("Diffuse")))
-            .SetStatic(true);
+            .SetStatic(true)
+            .TouchComponent<DummyBehaviourScript>((r, c) => 
+            {
+                if (r)
+                {
+                    c.name = "Dummy One";
+                    c.DummyLog("Hello from the last part of the chain!");
+                }
+            });
 	}
 }

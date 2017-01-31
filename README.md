@@ -3,7 +3,7 @@ inFluent
 
 
 inFluent is a simple fluent API for Unity3D GameObjects.
-Now you can chain inline via extensions as many methods as you want - including lambdas!
+Chain as many methods as you want, including lambda expressions.
 
 ----------
 
@@ -43,12 +43,12 @@ Rendering
 Basic how to use
 -------------
 
-Before we get the extension methods, we need to add the inFluent namespace to out class.
+Add the inFluent namespace to our MonoBehaviour class.
 
     using inFluent;
 
-Now we can simply reference any GameObject and InteliSense to show us all available extension methods.
-Let's consider the following example where we have a Script on our GameObject and we make some settings at OnAwake().
+Now InteliSense will present on any GameObject all avaible extension methods.
+Let's consider the following example where we setup a GameObject at OnAwake():
 
     public Transform StartLookDirection;
     public Vector3 StartScale;
@@ -60,8 +60,8 @@ Let's consider the following example where we have a Script on our GameObject an
 					    .LookAt(StartLookDirection.position);
     }
 
-Now we have set three settings with a single statement, isn't this much cleaner?
-Let's move to a more interesting example, attaching a Component with a lambda!
+Now we have set three settings with a single statement, much cleaner!
+Let's move on to a more interesting example, attaching and setting up a Component with a lambda expression:
 
     public Transform StartLookDirection
     public AudioClip AmbientMusic;
@@ -82,9 +82,4 @@ Let's move to a more interesting example, attaching a Component with a lambda!
 					    });
     }
 
-As you can see, we have made again not just several settings inline, but also managed effortless changes to the attached component and even invoked a method!
-
-Future
-------
-inFluent is just a small side project but feel free to request or contribute more extensions for Unity API's.
-At this stage, there are not stepstones are other concrete plans.
+As you can see, we have attached and setup a Component while also calling another method from inside the lambdas scope!
